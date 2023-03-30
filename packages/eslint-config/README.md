@@ -1,11 +1,11 @@
 ## Install
 
 ```shell
-npm i -D @kennethkeim/eslint-config @typescript-eslint/eslint-plugin eslint
+npm i -D @kennethkeim/eslint-config @typescript-eslint/eslint-plugin eslint-plugin-sonarjs eslint
 ```
 
 ```shell
-pnpm add -D @kennethkeim/eslint-config @typescript-eslint/eslint-plugin eslint
+pnpm add -D @kennethkeim/eslint-config @typescript-eslint/eslint-plugin eslint-plugin-sonarjs eslint
 ```
 
 ```js
