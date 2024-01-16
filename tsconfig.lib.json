@@ -1,0 +1,28 @@
+{
+  // Based on https://github.com/tsconfig/bases/blob/main/bases/strictest.json
+  "compilerOptions": {
+    "strict": true,
+    "allowUnusedLabels": false,
+    "allowUnreachableCode": false,
+    "exactOptionalPropertyTypes": true,
+    "noFallthroughCasesInSwitch": true,
+    "noImplicitOverride": true,
+    "noImplicitReturns": true,
+    "noPropertyAccessFromIndexSignature": true,
+    "noUncheckedIndexedAccess": true,
+    "noUnusedLocals": true,
+    "noUnusedParameters": true,
+
+    "isolatedModules": true,
+    "checkJs": true,
+    "esModuleInterop": true,
+    "forceConsistentCasingInFileNames": true,
+
+    // Library options
+    "skipLibCheck": false,
+    "declaration": true
+  },
+  "$schema": "https://json.schemastore.org/tsconfig",
+  "display": "Strictest",
+  "_version": "2.0.0"
+}
