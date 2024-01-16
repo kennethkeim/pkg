@@ -6,7 +6,7 @@
   "license": "MIT",
   "scripts": {
     "build": "tsc",
-    "sendit": "npm publish --access public"
+    "sendit": "npm run build && npm publish --access public"
   },
   "keywords": [],
   "files": [
