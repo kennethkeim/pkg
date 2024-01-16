@@ -8,6 +8,7 @@
     // "target": "ES2022", // Node.js 18
     // "lib": ["DOM", "DOM.Iterable", "ES2022"],
     // "resolveJsonModule": false, // ESM doesn't yet support JSON modules.
+    "esModuleInterop": true,
 
     // Strict options
     "strict": true,
