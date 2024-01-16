@@ -2,6 +2,9 @@
 
 A set of API utilities intended for my own personal/commercial use.
 
+NOT INTENDED TO BE USED BY OTHERS. This utility library is intended to reduce my boilerplate API code, so it
+will have my defaults hardcoded. APIs are subject to breaking changes.
+
 # Mailer
 
 Module to send mail via [Brevo](https://brevo.com) via the credentials from [this page](https://app.brevo.com/settings/keys/smtp).
