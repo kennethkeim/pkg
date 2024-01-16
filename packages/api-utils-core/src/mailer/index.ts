@@ -1,0 +1,1 @@
+export const mailer = { send: () => console.log('send')}

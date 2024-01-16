@@ -1,0 +1,14 @@
+{
+  "name": "@kennethkeim/api-utils-core",
+  "version": "0.0.1",
+  "main": "lib/index.js",
+  "type": "module",
+  "scripts": {
+    "build": "tsc"
+  },
+  "keywords": [],
+  "dependencies": {},
+  "devDependencies": {
+    "typescript": "^5.0.2"
+  }
+}
