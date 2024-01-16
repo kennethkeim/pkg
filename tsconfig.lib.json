@@ -1,27 +1,29 @@
 {
-  // Based on https://github.com/tsconfig/bases/blob/main/bases/strictest.json
+  // Based on: https://github.com/sindresorhus/tsconfig/blob/main/tsconfig.json
   "compilerOptions": {
+    // Module options - I can't get any of this to work
+    // "module": "node16",
+    // "moduleResolution": "node16",
+    // "moduleDetection": "force",
+    // "target": "ES2022", // Node.js 18
+    // "lib": ["DOM", "DOM.Iterable", "ES2022"],
+    // "resolveJsonModule": false, // ESM doesn't yet support JSON modules.
+
+    // Strict options
     "strict": true,
-    "allowUnusedLabels": false,
-    "allowUnreachableCode": false,
-    "exactOptionalPropertyTypes": true,
-    "noFallthroughCasesInSwitch": true,
-    "noImplicitOverride": true,
     "noImplicitReturns": true,
-    "noPropertyAccessFromIndexSignature": true,
-    "noUncheckedIndexedAccess": true,
+    "noImplicitOverride": true,
     "noUnusedLocals": true,
     "noUnusedParameters": true,
-
-    "isolatedModules": true,
-    "checkJs": true,
-    "esModuleInterop": true,
+    "noFallthroughCasesInSwitch": true,
+    "noUncheckedIndexedAccess": true,
+    "noPropertyAccessFromIndexSignature": true,
+    "noEmitOnError": true,
+    "useDefineForClassFields": true,
     "forceConsistentCasingInFileNames": true,
 
     // Library options
     "skipLibCheck": false,
     "declaration": true
-  },
-  "display": "Strictest",
-  "_version": "2.0.0"
+  }
 }
