@@ -4,9 +4,13 @@
   "main": "lib/index.js",
   "type": "module",
   "scripts": {
-    "build": "tsc"
+    "build": "tsc",
+    "sendit": "npm publish --access public"
   },
   "keywords": [],
+  "files": [
+    "lib"
+  ],
   "dependencies": {
     "nodemailer": "^6.9.8",
     "zod": "^3.22.4"
