@@ -8,6 +8,18 @@ importers:
 
   .:
     devDependencies:
+      '@kennethkeim/eslint-config':
+        specifier: workspace:^
+        version: link:packages/eslint-config
+      '@typescript-eslint/eslint-plugin':
+        specifier: ^5.57.0
+        version: 5.57.0(@typescript-eslint/parser@5.55.0)(eslint@8.36.0)(typescript@5.0.2)
+      eslint:
+        specifier: ^8.0.1
+        version: 8.36.0
+      eslint-plugin-sonarjs:
+        specifier: ^0.19.0
+        version: 0.19.0(eslint@8.36.0)
       nx:
         specifier: 15.8.7
         version: 15.8.7
@@ -40,18 +52,6 @@ importers:
         specifier: ^16.3.1
         version: 16.3.1
     devDependencies:
-      '@kennethkeim/eslint-config':
-        specifier: latest
-        version: link:../eslint-config
-      '@typescript-eslint/eslint-plugin':
-        specifier: ^5.57.0
-        version: 5.57.0(@typescript-eslint/parser@5.55.0)(eslint@8.36.0)(typescript@5.0.2)
-      eslint:
-        specifier: ^8.0.1
-        version: 8.36.0
-      eslint-plugin-sonarjs:
-        specifier: ^0.19.0
-        version: 0.19.0(eslint@8.36.0)
       typescript:
         specifier: ^5.0.2
         version: 5.0.2
@@ -74,6 +74,9 @@ importers:
         specifier: ^0.19.0
         version: 0.19.0(eslint@8.36.0)
     devDependencies:
+      tsup:
+        specifier: ^8.0.1
+        version: 8.0.1(typescript@5.0.2)
       typescript:
         specifier: ^5.0.2
         version: 5.0.2

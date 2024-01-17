@@ -1,12 +1,18 @@
 {
   "name": "@kennethkeim/eslint-config",
-  "version": "0.0.2",
-  "main": "index.js",
-  "type": "module",
-  "scripts": {},
+  "version": "0.0.3",
+  "main": "dist/index.js",
+  "module": "dist/index.mjs",
+  "scripts": {
+    "build": "tsup index.js --format cjs,esm",
+    "sendit": "npm run build && npm publish --access public"
+  },
   "keywords": [
     "eslint",
     "eslintconfig"
+  ],
+  "files": [
+    "dist"
   ],
   "dependencies": {
     "@typescript-eslint/eslint-plugin": "^5.57.0",
@@ -16,6 +22,7 @@
     "eslint-plugin-sonarjs": "^0.19.0"
   },
   "devDependencies": {
+    "tsup": "^8.0.1",
     "typescript": "^5.0.2"
   },
   "peerDependencies": {

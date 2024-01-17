@@ -2,13 +2,17 @@
   "name": "my-config-packages",
   "version": "0.0.0",
   "license": "MIT",
+  "type": "commonjs",
   "scripts": {
-    "setup-local": "corepack enable",
-    "format": "prettier --write ."
+    "format": "prettier --write .",
+    "check-lint-rules": "npx eslint-config-prettier src/index.ts"
   },
   "private": true,
-  "dependencies": {},
   "devDependencies": {
+    "@kennethkeim/eslint-config": "workspace:^",
+    "@typescript-eslint/eslint-plugin": "^5.57.0",
+    "eslint": "^8.0.1",
+    "eslint-plugin-sonarjs": "^0.19.0",
     "nx": "15.8.7",
     "prettier": "^2.6.2"
   }

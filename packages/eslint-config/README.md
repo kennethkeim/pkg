@@ -13,5 +13,5 @@ pnpm add -D @kennethkeim/eslint-config @typescript-eslint/eslint-plugin eslint-p
 module.exports = {
   extends: "@kennethkeim/eslint-config",
   rules: {},
-};
+}
 ```
