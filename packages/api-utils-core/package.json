@@ -1,0 +1,26 @@
+{
+  "name": "@kennethkeim/api-utils-core",
+  "version": "0.0.5",
+  "main": "dist/index.js",
+  "module": "dist/index.mjs",
+  "types": "dist/index.d.ts",
+  "license": "MIT",
+  "scripts": {
+    "build": "tsup src/index.ts --format cjs,esm --dts",
+    "lint": "tsc",
+    "sendit": "npm run build && npm publish --access public"
+  },
+  "keywords": [],
+  "files": [
+    "dist"
+  ],
+  "dependencies": {
+    "nodemailer": "^6.9.8",
+    "zod": "^3.22.4"
+  },
+  "devDependencies": {
+    "@types/nodemailer": "^6.4.14",
+    "tsup": "^8.0.1",
+    "typescript": "^5.0.2"
+  }
+}

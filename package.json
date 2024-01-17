@@ -2,7 +2,6 @@
   "name": "my-config-packages",
   "version": "0.0.0",
   "license": "MIT",
-  "packageManager": "pnpm@7.29.3",
   "scripts": {
     "setup-local": "corepack enable",
     "format": "prettier --write ."
