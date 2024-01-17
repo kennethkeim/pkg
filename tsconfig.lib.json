@@ -1,30 +1,21 @@
 {
-  // Based on: https://github.com/sindresorhus/tsconfig/blob/main/tsconfig.json
   "compilerOptions": {
-    // Module options - I can't get any of this to work
-    // "module": "node16",
-    // "moduleResolution": "node16",
-    // "moduleDetection": "force",
-    // "target": "ES2022", // Node.js 18
-    // "lib": ["DOM", "DOM.Iterable", "ES2022"],
-    // "resolveJsonModule": false, // ESM doesn't yet support JSON modules.
+    /* Base Options: */
     "esModuleInterop": true,
-
-    // Strict options
+    "skipLibCheck": true,
+    "target": "es2022",
+    "verbatimModuleSyntax": true,
+    "allowJs": true,
+    "resolveJsonModule": true,
+    "moduleDetection": "force",
+    /* Strictness */
     "strict": true,
-    "noImplicitReturns": true,
-    "noImplicitOverride": true,
-    "noUnusedLocals": true,
-    "noUnusedParameters": true,
-    "noFallthroughCasesInSwitch": true,
     "noUncheckedIndexedAccess": true,
-    "noPropertyAccessFromIndexSignature": true,
-    "noEmitOnError": true,
-    "useDefineForClassFields": true,
-    "forceConsistentCasingInFileNames": true,
-
-    // Library options
-    "skipLibCheck": false,
-    "declaration": true
+    /* If NOT transpiling with TypeScript: */
+    "moduleResolution": "Bundler",
+    "module": "ESNext",
+    "noEmit": true
+    /* If your code runs in the DOM: */
+    // "lib": ["es2022", "dom", "dom.iterable"],
   }
 }

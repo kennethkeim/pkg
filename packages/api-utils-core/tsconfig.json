@@ -1,7 +1,6 @@
 {
   "extends": "../../tsconfig.lib.json",
   "compilerOptions": {
-    "outDir": "lib",
     "paths": { "~/*": ["./src/*"] }
   },
   "include": ["src/**/*.ts"]
