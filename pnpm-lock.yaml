@@ -48,6 +48,9 @@ importers:
 
   packages/demo-ts-app:
     dependencies:
+      '@kennethkeim/api-utils-core':
+        specifier: workspace:^
+        version: link:../api-utils-core
       dotenv:
         specifier: ^16.3.1
         version: 16.3.1
