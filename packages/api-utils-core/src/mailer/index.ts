@@ -1,7 +1,7 @@
 import * as nodemailer from "nodemailer"
 import type SMTPTransport from "nodemailer/lib/smtp-transport"
 import * as z from "zod"
-import { getFirstZodIssue } from "~/errors/zod-errors"
+import { getFirstZodIssue } from "../errors/zod-errors"
 
 export interface SendMailOptions {
   to?: string
