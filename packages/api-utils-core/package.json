@@ -8,7 +8,7 @@
   "scripts": {
     "build": "tsup src/index.ts --format cjs,esm --dts",
     "lint": "tsc",
-    "sendit": "npm run build && npm publish --access public"
+    "sendit": "pnpm run build && pnpm publish --access public"
   },
   "keywords": [],
   "files": [

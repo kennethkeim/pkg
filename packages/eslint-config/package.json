@@ -5,7 +5,7 @@
   "module": "dist/index.mjs",
   "scripts": {
     "build": "tsup index.js --format cjs,esm",
-    "sendit": "npm run build && npm publish --access public"
+    "sendit": "pnpm run build && pnpm publish --access public"
   },
   "keywords": [
     "eslint",
