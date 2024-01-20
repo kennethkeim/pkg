@@ -1,0 +1,9 @@
+{
+  "extends": "../../tsconfig.lib.json",
+  "compilerOptions": {
+    // Jest tests can't use "import" syntax with this option
+    // https://www.typescriptlang.org/tsconfig#verbatimModuleSyntax
+    "verbatimModuleSyntax": false
+  },
+  "include": ["tests/**/*.ts"]
+}

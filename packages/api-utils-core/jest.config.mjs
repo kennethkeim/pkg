@@ -27,6 +27,13 @@ const config = {
 
   // The root directory that Jest should scan for tests and modules within
   rootDir: "./tests",
+
+  // https://huafu.github.io/ts-jest/user/config/tsConfig
+  globals: {
+    "ts-jest": {
+      tsconfig: "tsconfig.test.json",
+    },
+  },
 }
 
 // module.exports = config
