@@ -64,6 +64,13 @@ export class ServiceError extends ApiError {
   }
 }
 
+export class ConfigError extends CustomError {
+  public constructor(message: string) {
+    super(message)
+    this.name = this.constructor.name
+  }
+}
+
 // Error utilities ------------
 
 /** https://medium.com/with-orus/the-5-commandments-of-clean-error-handling-in-typescript-93a9cbdf1af5 */

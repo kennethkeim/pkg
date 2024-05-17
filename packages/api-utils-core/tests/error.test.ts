@@ -1,4 +1,4 @@
-import { ApiError, ClientError, ServiceError } from "../src"
+import { ApiError, ClientError, ConfigError, ServiceError } from "../src"
 
 describe("Api Errors", () => {
   it("Should extend correct Errors", () => {
@@ -15,5 +15,11 @@ describe("Api Errors", () => {
     expect(clientErr).toBeInstanceOf(ApiError)
     clientErr.setCause(new Error("oh no"))
     expect(clientErr.cause).toBeInstanceOf(Error)
+  })
+
+  it("Should have correct name in stack", () => {
+    const configErr = new ConfigError("Invalid config")
+    expect(configErr.stack).toContain("ConfigError: Invalid config")
+    expect(configErr.name).toBe("ConfigError")
   })
 })

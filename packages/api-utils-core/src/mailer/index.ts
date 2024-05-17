@@ -2,6 +2,7 @@ import * as nodemailer from "nodemailer"
 import type SMTPTransport from "nodemailer/lib/smtp-transport"
 import * as z from "zod"
 import { getFirstZodIssue } from "../errors/zod-errors"
+import { ConfigError } from "../errors/exceptions"
 
 export interface SendMailOptions {
   to?: string
@@ -31,7 +32,7 @@ export class Mailer {
 
     if (!envResult.success) {
       const zodIssue = getFirstZodIssue(envResult.error)
-      throw new Error(`Invalid Mailer environment variables. ${zodIssue}`)
+      throw new ConfigError(`Invalid Mailer environment variables. ${zodIssue}`)
     }
 
     const env = envResult.data
