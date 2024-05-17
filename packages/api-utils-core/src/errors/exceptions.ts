@@ -12,6 +12,19 @@ export type ServiceErrorStatus =
   | HttpStatus.InternalServerError
   | HttpStatus.GatewayTimeout
 
+const ERROR_MSG: Record<ClientErrorStatus | ServiceErrorStatus, string> = {
+  400: "Bad request.",
+  401: "Unauthorized.",
+  403: "Forbidden.",
+  404: "Not found.",
+  405: "Method not allowed.",
+  500: "Internal server error.",
+  503: "Service unavailable.",
+  504: "Service timeout.",
+}
+
+// Error classes ------------
+
 export class CustomError extends Error {
   cause?: Error
 
@@ -39,14 +52,14 @@ export class ApiError extends CustomError {
 
 export class ClientError extends ApiError {
   public constructor(status?: ClientErrorStatus, message?: string) {
-    super(status ?? 400, message ?? "Bad Request.")
+    super(status ?? 400, message ?? ERROR_MSG[status ?? 400])
     this.name = this.constructor.name
   }
 }
 
 export class ServiceError extends ApiError {
   public constructor(status?: ServiceErrorStatus, message?: string) {
-    super(status ?? 500, message ?? "Internal Server Error.")
+    super(status ?? 500, message ?? ERROR_MSG[status ?? 500])
     this.name = this.constructor.name
   }
 }
