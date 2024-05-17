@@ -8,4 +8,12 @@ describe("Api Errors", () => {
     expect(serviceErr).toBeInstanceOf(ApiError)
     expect(serviceErr).not.toBeInstanceOf(ClientError)
   })
+
+  it("Should set cause correctly", () => {
+    const clientErr = new ClientError()
+    expect(clientErr).toBeInstanceOf(Error)
+    expect(clientErr).toBeInstanceOf(ApiError)
+    clientErr.setCause(new Error("oh no"))
+    expect(clientErr.cause).toBeInstanceOf(Error)
+  })
 })

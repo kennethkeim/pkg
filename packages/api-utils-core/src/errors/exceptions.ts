@@ -1,32 +1,39 @@
 import { type HttpStatus } from "../http"
 
-type ClientErrorStatus =
+export type ClientErrorStatus =
   | HttpStatus.Unauthorized
   | HttpStatus.Forbidden
   | HttpStatus.BadRequest
   | HttpStatus.MethodNotAllowed
   | HttpStatus.NotFound
 
-type ServiceErrorStatus =
+export type ServiceErrorStatus =
   | HttpStatus.ServiceUnavailable
   | HttpStatus.InternalServerError
   | HttpStatus.GatewayTimeout
 
-export class ApiError extends Error {
+export class CustomError extends Error {
   cause?: Error
 
+  protected constructor(message: string) {
+    super(message)
+    this.name = this.constructor.name
+  }
+
+  /** Set `cause` on existing `CustomError`. */
+  public setCause(cause: Error): this {
+    this.cause = cause
+    return this
+  }
+}
+
+export class ApiError extends CustomError {
   protected constructor(
     public status: ClientErrorStatus | ServiceErrorStatus,
     message: string
   ) {
     super(message)
     this.name = this.constructor.name
-  }
-
-  /** Set `cause` on existing `ApiError`. */
-  public setCause(cause: Error): ApiError {
-    this.cause = cause
-    return this
   }
 }
 
@@ -43,6 +50,8 @@ export class ServiceError extends ApiError {
     this.name = this.constructor.name
   }
 }
+
+// Error utilities ------------
 
 /** https://medium.com/with-orus/the-5-commandments-of-clean-error-handling-in-typescript-93a9cbdf1af5 */
 export const getError = (value: unknown): Error => {

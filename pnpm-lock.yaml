@@ -11,6 +11,9 @@ importers:
       '@kennethkeim/eslint-config':
         specifier: workspace:^
         version: link:packages/eslint-config
+      '@types/jest':
+        specifier: ^29.5.11
+        version: 29.5.11
       '@typescript-eslint/eslint-plugin':
         specifier: ^5.57.0
         version: 5.57.0(@typescript-eslint/parser@5.55.0)(eslint@8.36.0)(typescript@5.0.2)

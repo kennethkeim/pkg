@@ -10,10 +10,12 @@
   "private": true,
   "devDependencies": {
     "@kennethkeim/eslint-config": "workspace:^",
+    "@types/jest": "^29.5.11",
     "@typescript-eslint/eslint-plugin": "^5.57.0",
     "eslint": "^8.0.1",
     "eslint-plugin-sonarjs": "^0.19.0",
     "nx": "15.8.7",
     "prettier": "^2.6.2"
-  }
+  },
+  "packageManager": "pnpm@8.10.5+sha1.4370a069f21873a0ad83c785b8048ed8caf6e6e9"
 }
