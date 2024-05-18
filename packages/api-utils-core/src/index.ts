@@ -2,4 +2,5 @@
 export * from "./mailer"
 export * from "./errors/zod-errors"
 export * from "./errors/exceptions"
+export * from "./errors/error-response"
 export * from "./http"
