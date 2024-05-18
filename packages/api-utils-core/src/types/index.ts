@@ -1,7 +1,7 @@
 import type { ApiError } from "../errors/exceptions"
 
 export type Result<TData, TError extends Error = ApiError> = {
-  data: TData
+  data?: TData
   message?: string
   error?: TError
 }
