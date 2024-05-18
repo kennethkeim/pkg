@@ -21,6 +21,12 @@ export interface GenericLogger {
   error: (error: ApiError) => void
 }
 
+/**
+ * Handle an error - log it, [send email], [send api response]\
+ * At a minimum, the error will be logged.\
+ * If a mailer is provided an email will be sent with the stack trace.\
+ * If a response object is provided, the response will be sent so you should return from the handler fn.
+ * */
 export const handleApiError = async (
   error: unknown,
   logger: GenericLogger,
