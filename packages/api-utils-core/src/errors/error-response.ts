@@ -23,12 +23,12 @@ export interface GenericLogger {
 
 export const handleApiError = async (
   error: unknown,
-  logger?: GenericLogger,
+  logger: GenericLogger,
   mailer?: Mailer,
   res?: GenericResponse
 ): Promise<void> => {
   const apiError = getApiError(error)
-  logger?.error(apiError)
+  logger.error(apiError)
 
   try {
     const now = new Date()
