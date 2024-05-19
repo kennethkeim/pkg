@@ -19,7 +19,10 @@ export const authRequest = (
   reqHeaders: IncomingHttpHeaders,
   token: string
 ): void => {
-  if (reqHeaders["Authorization"] !== token) {
+  if (
+    reqHeaders["Authorization"] !== token &&
+    reqHeaders["authorization"] !== token
+  ) {
     throw new ClientError(403)
   }
 }
