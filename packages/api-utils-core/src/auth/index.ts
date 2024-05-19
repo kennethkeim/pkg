@@ -23,6 +23,6 @@ export const authRequest = (
     reqHeaders["Authorization"] !== token &&
     reqHeaders["authorization"] !== token
   ) {
-    throw new ClientError(403)
+    throw new ClientError(401)
   }
 }
