@@ -16,12 +16,16 @@ export const allowMethods = (
 
 /** Authenticate request by checking "Authorization" header for token. */
 export const authRequest = (
-  reqHeaders: IncomingHttpHeaders,
+  reqHeaders: IncomingHttpHeaders | Headers,
   token: string
 ): void => {
-  if (
-    reqHeaders["Authorization"] !== token &&
-    reqHeaders["authorization"] !== token
+  if ("get" in reqHeaders && typeof reqHeaders.get === "function") {
+    // Check fetch api headers (Nextjs14)
+    if (reqHeaders.get("Authorization") !== token) throw new ClientError(401)
+  } else if (
+    // Check http headers (Nextjs13)
+    (reqHeaders as IncomingHttpHeaders)["Authorization"] !== token &&
+    (reqHeaders as IncomingHttpHeaders)["authorization"] !== token
   ) {
     throw new ClientError(401)
   }
