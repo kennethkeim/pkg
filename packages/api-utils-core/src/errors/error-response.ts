@@ -57,5 +57,8 @@ export const handleApiError = async (
   }
 
   // Only send response if response util is provided
-  res?.status(apiError.status).json({ message: apiError.message })
+  if (res?.status) {
+    // response object is defined but status is not until response is formed/sent
+    res?.status(apiError.status).json({ message: apiError.message })
+  }
 }
