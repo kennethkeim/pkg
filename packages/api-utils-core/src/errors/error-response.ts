@@ -11,10 +11,14 @@ export const getErrorResponse = (error: ApiError): ErrorResponse => {
   }
 }
 
-export interface GenericResponse {
+export interface Next13Response {
   status: (status: number) => {
     json: (json: Record<string, unknown>) => void
   }
+}
+
+interface Next14Response {
+  json: (json: object, init?: { status: number }) => unknown
 }
 
 export interface GenericLogger {
@@ -31,8 +35,8 @@ export const handleApiError = async (
   error: unknown,
   logger: GenericLogger,
   mailer?: Mailer,
-  res?: GenericResponse
-): Promise<void> => {
+  res?: Next13Response | Next14Response
+): Promise<unknown> => {
   const apiError = getApiError(error)
   logger.error(apiError)
 
@@ -57,8 +61,12 @@ export const handleApiError = async (
   }
 
   // Only send response if response util is provided
-  if (res?.status) {
-    // response object is defined but status is not until response is formed/sent
-    res?.status(apiError.status).json({ message: apiError.message })
+  const body = { message: apiError.message }
+  if (res && "status" in res) {
+    // Nextjs 13
+    res?.status(apiError.status).json(body)
+  } else if (res) {
+    // Nextjs 14
+    return res.json(body, { status: apiError.status })
   }
 }
