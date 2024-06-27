@@ -31,12 +31,12 @@ export interface GenericLogger {
  * If a mailer is provided an email will be sent with the stack trace.\
  * If a response object is provided, the response will be sent so you should return from the handler fn.
  * */
-export const handleApiError = async (
+export const handleApiError = async <T>(
   error: unknown,
   logger: GenericLogger,
   mailer?: Mailer,
   res?: Next13Response | Next14Response
-): Promise<unknown> => {
+): Promise<T> => {
   const apiError = getApiError(error)
   logger.error(apiError)
 
@@ -65,8 +65,11 @@ export const handleApiError = async (
   if (res && "status" in res) {
     // Nextjs 13
     res?.status(apiError.status).json(body)
+    return null as T
   } else if (res) {
     // Nextjs 14
-    return res.json(body, { status: apiError.status })
+    return res.json(body, { status: apiError.status }) as T
+  } else {
+    return null as T
   }
 }
