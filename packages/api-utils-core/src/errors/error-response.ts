@@ -1,5 +1,7 @@
 import { ApiError, getApiError } from "./exceptions"
 import type { Mailer } from "../mailer"
+import type { EventDetail } from "../types/event"
+import { logger as defaultLogger } from "../logger"
 
 export interface ErrorResponse {
   message: string
@@ -27,18 +29,23 @@ export interface GenericLogger {
 
 /**
  * Handle an error - log it, [send email], [send api response]\
- * At a minimum, the error will be logged.\
+ * The error will be logged. (using default logger if none provided)\
  * If a mailer is provided an email will be sent with the stack trace.\
  * If a response object is provided, the response will be sent so you should return from the handler fn.
+ *
+ * @param logger Pass custom logger *instance* if you use a context feature. i.e. `logger.addContextKey("key", "value")`
  * */
 export const handleApiError = async <T>(
   error: unknown,
-  logger: GenericLogger,
+  event?: EventDetail,
   mailer?: Mailer,
-  res?: Next13Response | Next14Response
+  res?: Next13Response | Next14Response,
+  logger?: GenericLogger
 ): Promise<T> => {
   const apiError = getApiError(error)
-  logger.error(apiError)
+
+  const logError = logger?.error ?? defaultLogger.error
+  logError(apiError)
 
   try {
     const now = new Date()
@@ -51,6 +58,7 @@ export const handleApiError = async <T>(
     await mailer?.send({
       subject: `API Error [${apiError.status}] [${subjectDateStr}]`,
       html: `
+          <pre>Event: ${JSON.stringify(event, null, 2)}</pre>
           <pre>Status: ${apiError.status}</pre>
           <pre>${apiError.stack}</pre>
           <pre>${cause?.stack ?? "No nested error"}</pre>

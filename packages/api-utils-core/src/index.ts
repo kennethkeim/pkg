@@ -1,8 +1,10 @@
-// Single package entry point without (build) perf cost of index.ts file in each folder
+// Single package entry point without (build) perf cost of barrel file in each folder
 export * from "./mailer"
 export * from "./errors/zod-errors"
 export * from "./errors/exceptions"
 export * from "./errors/error-response"
 export * from "./http"
 export * from "./types"
+export * from "./types/event"
 export * from "./auth"
+export * from "./logger"
