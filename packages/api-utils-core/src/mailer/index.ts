@@ -1,31 +1,59 @@
-import * as nodemailer from "nodemailer"
-import type SMTPTransport from "nodemailer/lib/smtp-transport"
 import * as z from "zod"
 import { getFirstZodIssue } from "../errors/zod-errors"
 import { ConfigError } from "../errors/exceptions"
 
-export interface SendMailOptions {
-  to?: string
-  from?: string
+export interface MailRecipient {
+  email: string
+  /** Maximum allowed characters are 70.*/
+  name?: string
+}
+
+export interface MailSender {
+  email?: string
+  name?: string
+  id?: string
+}
+
+/** https://developers.brevo.com/reference/sendtransacemail */
+interface SendMailApiRequest {
+  sender: MailSender
+  to: Array<MailRecipient>
+  cc?: Array<MailRecipient>
+  bcc?: Array<MailRecipient>
+  subject: string
+  /** Mandatory if not using template */
+  htmlContent: string
+  textContent?: string
+  replyTo: MailRecipient
+  /** ISO date to schedule email. Expect +- 5 min accuracy */
+  scheduledAt?: string
+}
+
+type PassThroughParams = Pick<SendMailApiRequest, "cc" | "bcc" | "scheduledAt">
+
+export interface SendMailOptions extends PassThroughParams {
+  to?: string | MailRecipient[]
+  /** NOTE: email must be registered as a sender with Brevo */
+  from?: MailSender
   subject: string
   html: string
+  text?: string
+  replyTo?: MailRecipient
 }
 
 const envSchema = z.object({
-  user: z.string().email(),
-  pass: z.string().min(3),
+  apiKey: z.string().min(3),
   sysEventsSender: z.string().email(),
   sysEventsRecipient: z.string().email(),
 })
 
 export class Mailer {
-  private transporter: nodemailer.Transporter
+  private env: z.infer<typeof envSchema>
 
   /** @param appName Name of your app as it appears in email sender. */
-  constructor(appName: string) {
+  constructor(private appName: string) {
     const envResult = envSchema.safeParse({
-      user: process.env["MAILER_USER"],
-      pass: process.env["MAILER_PASS"],
+      apiKey: process.env["MAILER_API_KEY"],
       sysEventsSender: process.env["SYS_EVENTS_SENDER"],
       sysEventsRecipient: process.env["SYS_EVENTS_RECIPIENT"],
     })
@@ -35,39 +63,39 @@ export class Mailer {
       throw new ConfigError(`Invalid Mailer environment variables. ${zodIssue}`)
     }
 
-    const env = envResult.data
-
-    // https://app.brevo.com/settings/keys/smtp
-    // https://nodemailer.com/smtp/#tls-options
-    const smtpTransportOptions: SMTPTransport.Options = {
-      auth: { user: env.user, pass: env.pass },
-      host: "smtp-relay.brevo.com",
-      port: 587,
-      // Does not mean we're not using TLS, see nodemailer link above
-      secure: false,
-      // Require STARTTLS
-      requireTLS: true,
-    }
-
-    const defaults: SMTPTransport.Options = {
-      to: env.sysEventsRecipient,
-      from: `"${appName}" <${env.sysEventsSender}>`,
-      replyTo: env.sysEventsRecipient,
-    }
-
-    // create reusable transporter object using credentials and defaults
-    this.transporter = nodemailer.createTransport(
-      smtpTransportOptions,
-      defaults
-    )
-
-    // automatically provide plain text version of all emails
-    // htmlToText is from nodemailer-html-to-text, but we probably don't need it
-    // it's about as big as nodemailer itself
-    // this.transporter.use("compile", htmlToText());
+    this.env = envResult.data
   }
 
   public async send(options: SendMailOptions): Promise<void> {
-    await this.transporter.sendMail(options)
+    // Set up default recipient email or use provided recipient
+    let to: MailRecipient[] = [{ email: this.env.sysEventsRecipient }]
+    if (typeof options.to === "string") {
+      to = [{ email: options.to }]
+    } else if (options.to) {
+      to = options.to
+    }
+
+    const apiOptions: SendMailApiRequest = {
+      sender: options.from ?? {
+        email: this.env.sysEventsSender,
+        name: this.appName,
+      },
+      to,
+      replyTo: options.replyTo ?? { email: this.env.sysEventsRecipient },
+      subject: options.subject,
+      htmlContent: options.html,
+    }
+
+    // Things to only set if provided
+    if (options.text) apiOptions.textContent = options.text
+    if (options.scheduledAt) apiOptions.scheduledAt = options.scheduledAt
+    if (options.cc) apiOptions.cc = options.cc
+    if (options.bcc) apiOptions.bcc = options.bcc
+
+    await fetch("https://api.brevo.com/v3/smtp/email", {
+      headers: { "api-key": this.env.apiKey },
+      method: "POST",
+      body: JSON.stringify(apiOptions),
+    })
   }
 }
