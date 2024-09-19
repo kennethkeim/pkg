@@ -23,6 +23,15 @@ const ERROR_MSG: Record<ClientErrorStatus | ServiceErrorStatus, string> = {
   504: "Service timeout.",
 }
 
+export interface ErrDetail {
+  /** Toast title */
+  msg?: string
+  /** Toast description */
+  desc?: string
+  /** Error will be reported unless `false` */
+  report?: boolean
+}
+
 // Error classes ------------
 
 export class CustomError extends Error {
@@ -43,7 +52,8 @@ export class CustomError extends Error {
 export class ApiError extends CustomError {
   protected constructor(
     public status: ClientErrorStatus | ServiceErrorStatus,
-    message: string
+    message: string,
+    public details?: ErrDetail
   ) {
     super(message)
     this.name = this.constructor.name
@@ -51,14 +61,22 @@ export class ApiError extends CustomError {
 }
 
 export class ClientError extends ApiError {
-  public constructor(status?: ClientErrorStatus, message?: string) {
+  public constructor(
+    status?: ClientErrorStatus,
+    message?: string,
+    public details?: ErrDetail
+  ) {
     super(status ?? 400, message ?? ERROR_MSG[status ?? 400])
     this.name = this.constructor.name
   }
 }
 
 export class ServiceError extends ApiError {
-  public constructor(status?: ServiceErrorStatus, message?: string) {
+  public constructor(
+    status?: ServiceErrorStatus,
+    message?: string,
+    public details?: ErrDetail
+  ) {
     super(status ?? 500, message ?? ERROR_MSG[status ?? 500])
     this.name = this.constructor.name
   }
