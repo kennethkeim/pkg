@@ -89,6 +89,30 @@ export class ConfigError extends CustomError {
   }
 }
 
+export class AppError extends CustomError {
+  public constructor(message: string, public details?: ErrDetail) {
+    super(message)
+    this.name = this.constructor.name
+  }
+}
+
+/** User error that will not be reported by default */
+export class UserError extends CustomError {
+  details: Pick<ErrDetail, "desc" | "report"> = {
+    report: false,
+  }
+
+  public constructor(
+    message: string,
+    details?: Pick<ErrDetail, "desc" | "report">
+  ) {
+    super(message)
+    this.name = this.constructor.name
+    if (details?.desc) this.details.desc = details.desc
+    if (details?.report != null) this.details.report = details.report
+  }
+}
+
 // Error utilities ------------
 
 /** https://medium.com/with-orus/the-5-commandments-of-clean-error-handling-in-typescript-93a9cbdf1af5 */
