@@ -11,7 +11,7 @@ export class Logger implements GenericLogger {
     // };
 
     // This prints error name, message, and stack trace
-    console.error(`${error.stack}\n${error.cause?.stack}`)
+    console.error(`${error.stack}\n\n${error.cause?.stack}`)
   }
 }
 
