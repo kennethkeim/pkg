@@ -133,3 +133,12 @@ export const getApiError = (value: unknown): ApiError => {
   // Default to service error and set cause
   return new ServiceError().setCause(getError(value))
 }
+
+export const shouldReport = (error: unknown): boolean => {
+  // eslint-disable-next-line sonarjs/prefer-single-boolean-return
+  if (error instanceof ApiError && error.details?.report === false) {
+    return false
+  }
+
+  return true
+}
