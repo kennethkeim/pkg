@@ -1,5 +1,5 @@
 import type { GenericLogger } from "../errors/error-response"
-import type { ApiError } from "../errors/exceptions"
+import type { ApiError } from "@kennethkeim/core"
 
 export class Logger implements GenericLogger {
   error(error: ApiError) {

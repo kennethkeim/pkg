@@ -1,4 +1,5 @@
 {
+  // NOTE: Copied from https://github.com/mattpocock/pkg-demo
   "compilerOptions": {
     /* Base Options: */
     "esModuleInterop": true,
@@ -18,7 +19,6 @@
     "module": "ESNext",
     "noEmit": true
 
-    /* If your code runs in the DOM: */
-    // "lib": ["es2022", "dom", "dom.iterable"],
+    /* See specific packages for runtime settings (e.g. Node vs Browser) */
   }
 }

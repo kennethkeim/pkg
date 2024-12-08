@@ -1,3 +1,4 @@
+import { expect, it, describe } from "vitest"
 import { ZodError } from "zod"
 import { getFirstZodIssue } from "../src"
 

@@ -98,11 +98,10 @@ export class AppError extends CustomError {
 
 /** User error that will not be reported by default */
 export class UserError extends CustomError {
-  details: Pick<ErrDetail, "desc" | "report"> = {
-    report: false,
-  }
+  details: Pick<ErrDetail, "desc" | "report"> = { report: false }
 
   public constructor(
+    /** Message to show to user (usually in toast title) */
     message: string,
     details?: Pick<ErrDetail, "desc" | "report">
   ) {

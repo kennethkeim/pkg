@@ -1,4 +1,4 @@
-import { ApiError, getApiError } from "./exceptions"
+import { ApiError, getApiError } from "@kennethkeim/core"
 import type { Mailer } from "../mailer"
 import type { EventDetail } from "../types/event"
 import { logger as defaultLogger } from "../logger"

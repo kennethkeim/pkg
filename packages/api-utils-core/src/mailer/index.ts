@@ -1,6 +1,6 @@
 import * as z from "zod"
-import { getFirstZodIssue } from "../errors/zod-errors"
-import { ConfigError } from "../errors/exceptions"
+import { getFirstZodIssue } from "@kennethkeim/core"
+import { ConfigError } from "@kennethkeim/core"
 
 export interface MailRecipient {
   email: string

@@ -1,5 +1,5 @@
 import type { IncomingHttpHeaders } from "http"
-import { ClientError } from "../errors/exceptions"
+import { ClientError } from "@kennethkeim/core"
 
 export type HttpMethod = "OPTIONS" | "GET" | "POST" | "PATCH" | "PUT" | "DELETE"
 
