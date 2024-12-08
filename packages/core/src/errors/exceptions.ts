@@ -36,6 +36,7 @@ export interface ErrDetail {
 
 export class CustomError extends Error {
   cause?: Error
+  details?: ErrDetail
 
   protected constructor(message: string) {
     super(message)
@@ -98,15 +99,16 @@ export class AppError extends CustomError {
 
 /** User error that will not be reported by default */
 export class UserError extends CustomError {
-  details: Pick<ErrDetail, "desc" | "report"> = { report: false }
+  details: ErrDetail = { report: false }
 
   public constructor(
     /** Message to show to user (usually in toast title) */
     message: string,
-    details?: Pick<ErrDetail, "desc" | "report">
+    details?: ErrDetail
   ) {
     super(message)
     this.name = this.constructor.name
+    if (details?.msg) this.details.msg = details.msg
     if (details?.desc) this.details.desc = details.desc
     if (details?.report != null) this.details.report = details.report
   }
