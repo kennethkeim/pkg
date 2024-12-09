@@ -6,6 +6,7 @@ export type ClientErrorStatus =
   | HttpStatus.BadRequest
   | HttpStatus.MethodNotAllowed
   | HttpStatus.NotFound
+  | HttpStatus.TooManyRequests
 
 export type ServiceErrorStatus =
   | HttpStatus.ServiceUnavailable
@@ -18,6 +19,7 @@ const ERROR_MSG: Record<ClientErrorStatus | ServiceErrorStatus, string> = {
   403: "Forbidden.",
   404: "Not found.",
   405: "Method not allowed.",
+  429: "Too many requests",
   500: "Internal server error.",
   503: "Service unavailable.",
   504: "Service timeout.",
