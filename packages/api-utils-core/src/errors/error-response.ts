@@ -1,15 +1,61 @@
-import { ApiError, getApiError } from "@kennethkeim/core"
+import {
+  ApiError,
+  ClientError,
+  getApiError,
+  type ClientErrorStatus,
+  type ServiceErrorStatus,
+} from "@kennethkeim/core"
 import type { Mailer } from "../mailer"
 import type { EventDetail } from "../types/event"
 import { logger as defaultLogger } from "../logger"
 
-export interface ErrorResponse {
+/** API Response for success OR failure responses (ui can determine behaviour based on http status) */
+export interface ApiResponse {
+  /** Should be informative for the user (e.g. toast title) */
+  message?: string
+  /** Can be used to provide remediation instructions to the user or further details (e.g. toast message body) */
+  description?: string
+}
+
+export interface ApiErrorResponse extends ApiResponse {
+  /** Should be informative for the user (e.g. toast title) */
   message: string
 }
 
-export const getErrorResponse = (error: ApiError): ErrorResponse => {
+export interface GetErrorFnResult {
+  response: ApiErrorResponse
+  status: ServiceErrorStatus | ClientErrorStatus
+}
+
+/**
+ * Build an API error response from error.\
+ * Can be returned as-is or ingested by alternate transport layer like trpc.
+ */
+export const getErrorResponse = (
+  error: unknown,
+  defaultMessage?: string
+): GetErrorFnResult => {
+  let status = 500
+  let message = defaultMessage || "Sorry, something went wrong."
+  let description: string | undefined
+
+  if (error instanceof ApiError) {
+    status = error.status
+
+    if (error instanceof ClientError) {
+      // Return user-friendly error - use details attrs or error.message
+      message = error.details?.msg || error.message
+      description = error.details?.desc
+    } else {
+      // Show details attrs even from 5xx errors since those attributes are explicitly meant for the user
+      message = error.details?.msg || message
+      description = error.details?.desc
+    }
+  }
+
   return {
-    message: error.message,
+    status,
+    response: { message, description },
   }
 }
 
