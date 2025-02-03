@@ -73,25 +73,12 @@ export interface GenericLogger {
   error: (error: ApiError) => void
 }
 
-/**
- * Handle an error - log it, [send email], [send api response]\
- * The error will be logged. (using default logger if none provided)\
- * If a mailer is provided an email will be sent with the stack trace.\
- * If a response object is provided, the response will be sent so you should return from the handler fn.
- *
- * @param logger Pass custom logger *instance* if you use a context feature. i.e. `logger.addContextKey("key", "value")`
- * */
-export const handleApiError = async <T>(
+export const emailError = async (
   error: unknown,
-  event?: EventDetail,
   mailer?: Mailer,
-  res?: Next13Response | Next14Response,
-  logger?: GenericLogger
-): Promise<T> => {
+  event?: EventDetail
+) => {
   const apiError = getApiError(error)
-
-  const logError = logger?.error ?? defaultLogger.error
-  logError(apiError)
 
   try {
     const now = new Date()
@@ -113,6 +100,29 @@ export const handleApiError = async <T>(
   } catch (err) {
     console.log("Error sending email for error.")
   }
+}
+
+/**
+ * Handle an error - log it, [send email], [send api response]\
+ * The error will be logged. (using default logger if none provided)\
+ * If a mailer is provided an email will be sent with the stack trace.\
+ * If a response object is provided, the response will be sent so you should return from the handler fn.
+ *
+ * @param logger Pass custom logger *instance* if you use a context feature. i.e. `logger.addContextKey("key", "value")`
+ * */
+export const handleApiError = async <T>(
+  error: unknown,
+  event?: EventDetail,
+  mailer?: Mailer,
+  res?: Next13Response | Next14Response,
+  logger?: GenericLogger
+): Promise<T> => {
+  const apiError = getApiError(error)
+
+  const logError = logger?.error ?? defaultLogger.error
+  logError(apiError)
+
+  await emailError(apiError, mailer, event)
 
   // Only send response if response util is provided
   const body = { message: apiError.message }
