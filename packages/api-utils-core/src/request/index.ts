@@ -1,5 +1,5 @@
 import type { z } from "zod"
-import { getFirstZodIssue } from "@kennethkeim/core"
+import { ClientError, getFirstZodIssue } from "@kennethkeim/core"
 import type { Result } from "@kennethkeim/core"
 
 export const parseBody = async <T extends z.AnyZodObject>(
@@ -10,12 +10,13 @@ export const parseBody = async <T extends z.AnyZodObject>(
     const json = (await req.json()) as object
     const result = schema.safeParse(json)
     if (!result.success) {
-      const msg = getFirstZodIssue(result.error)
-      return { message: msg ?? "Invalid request" }
+      const message = getFirstZodIssue(result.error) ?? "Invalid request"
+      return { message, error: new ClientError(400, message) }
     }
     return { data: result.data }
     // eslint-disable-next-line @typescript-eslint/no-unused-vars
   } catch (err) {
-    return { message: "Invalid JSON" }
+    const message = "Invalid JSON"
+    return { message, error: new ClientError(400, message) }
   }
 }
