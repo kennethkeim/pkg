@@ -14,6 +14,15 @@ export interface MailSender {
   id?: string
 }
 
+export interface MailAttachment {
+  /** Absolute urls only */
+  url?: string
+  /** Required if content is attached directly */
+  name?: string
+  /** Base64 content */
+  content?: string
+}
+
 /** https://developers.brevo.com/reference/sendtransacemail */
 interface SendMailApiRequest {
   sender: MailSender
@@ -27,6 +36,7 @@ interface SendMailApiRequest {
   replyTo: MailRecipient
   /** ISO date to schedule email. Expect +- 5 min accuracy */
   scheduledAt?: string
+  attachment?: MailAttachment[]
 }
 
 type PassThroughParams = Pick<SendMailApiRequest, "cc" | "bcc" | "scheduledAt">
