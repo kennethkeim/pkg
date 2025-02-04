@@ -39,7 +39,10 @@ interface SendMailApiRequest {
   attachment?: MailAttachment[]
 }
 
-type PassThroughParams = Pick<SendMailApiRequest, "cc" | "bcc" | "scheduledAt">
+type PassThroughParams = Pick<
+  SendMailApiRequest,
+  "cc" | "bcc" | "scheduledAt" | "attachment"
+>
 
 export interface SendMailOptions extends PassThroughParams {
   to?: string | MailRecipient[]
@@ -101,6 +104,7 @@ export class Mailer {
     if (options.scheduledAt) apiOptions.scheduledAt = options.scheduledAt
     if (options.cc) apiOptions.cc = options.cc
     if (options.bcc) apiOptions.bcc = options.bcc
+    if (options.attachment) apiOptions.attachment = options.attachment
 
     await fetch("https://api.brevo.com/v3/smtp/email", {
       headers: { "api-key": this.env.apiKey },
