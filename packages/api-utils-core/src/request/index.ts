@@ -8,17 +8,30 @@ export const parseBody = async <
   req: Request,
   schema: T
 ): Promise<Result<z.infer<T>>> => {
+  let json: object | null = null
+
   try {
-    const json = (await req.json()) as object
-    const result = schema.safeParse(json)
-    if (!result.success) {
-      const message = getFirstZodIssue(result.error) ?? "Invalid request"
-      return { message, error: new ClientError(400, message) }
-    }
-    return { data: result.data }
-    // eslint-disable-next-line @typescript-eslint/no-unused-vars
+    json = (await req.json()) as object
   } catch (err) {
+    // JSON parsing will fail if body is empty
+    if (
+      schema.isOptional() &&
+      err instanceof Error &&
+      err.message === "Unexpected end of JSON input"
+    ) {
+      return {}
+    }
+
     const message = "Invalid JSON"
     return { message, error: new ClientError(400, message) }
   }
+
+  const result = schema.safeParse(json)
+
+  if (!result.success) {
+    const message = getFirstZodIssue(result.error) ?? "Invalid request"
+    return { message, error: new ClientError(400, message) }
+  }
+
+  return { data: result.data }
 }
