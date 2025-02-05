@@ -2,7 +2,9 @@ import type { z } from "zod"
 import { ClientError, getFirstZodIssue } from "@kennethkeim/core"
 import type { Result } from "@kennethkeim/core"
 
-export const parseBody = async <T extends z.AnyZodObject>(
+export const parseBody = async <
+  T extends z.AnyZodObject | z.ZodOptional<z.AnyZodObject>
+>(
   req: Request,
   schema: T
 ): Promise<Result<z.infer<T>>> => {
