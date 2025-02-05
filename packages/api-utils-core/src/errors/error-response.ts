@@ -98,7 +98,11 @@ export const emailError = async (
           <pre>Time: ${now.toISOString()}</pre>`,
     })
   } catch (err) {
-    console.log("Error sending email for error.")
+    const reportingErr = err instanceof Error ? err.message : "Unknown Error"
+    const ogMessage = apiError.message
+    console.error(
+      `Encountered error "${reportingErr}" while reporting "${ogMessage}"`
+    )
   }
 }
 
