@@ -4,7 +4,9 @@
   "main": "dist/index.js",
   "type": "module",
   "scripts": {
-    "lint": "tsc --noEmit"
+    "lint": "tsc --noEmit",
+    "send-error": "tsx src/send-error",
+    "send-mail": "tsx src/send-mail"
   },
   "devDependencies": {
     "typescript": "^5.0.2"
