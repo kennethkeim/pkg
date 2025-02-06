@@ -1,5 +1,5 @@
 import * as z from "zod"
-import { getFirstZodIssue } from "@kennethkeim/core"
+import { fetchJson, getFirstZodIssue } from "@kennethkeim/core"
 import { ConfigError } from "@kennethkeim/core"
 
 export interface MailRecipient {
@@ -106,7 +106,7 @@ export class Mailer {
     if (options.bcc) apiOptions.bcc = options.bcc
     if (options.attachment) apiOptions.attachment = options.attachment
 
-    await fetch("https://api.brevo.com/v3/smtp/email", {
+    await fetchJson("https://api.brevo.com/v3/smtp/email", {
       headers: { "api-key": this.env.apiKey },
       method: "POST",
       body: JSON.stringify(apiOptions),
