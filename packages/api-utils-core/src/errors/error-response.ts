@@ -75,7 +75,7 @@ export interface GenericLogger {
 
 export const emailError = async (
   error: unknown,
-  mailer?: Mailer,
+  mailer: Mailer,
   event?: EventDetail
 ) => {
   const apiError = getApiError(error)
@@ -88,7 +88,7 @@ export const emailError = async (
     const cause = apiError.cause
 
     // Can't fire and forget from serverless fn
-    await mailer?.send({
+    await mailer.send({
       subject: `API Error [${apiError.status}] [${subjectDateStr}]`,
       html: `
           <pre>Event: ${JSON.stringify(event, null, 2)}</pre>
@@ -126,7 +126,9 @@ export const handleApiError = async <T>(
   const logError = logger?.error ?? defaultLogger.error
   logError(apiError)
 
-  await emailError(apiError, mailer, event)
+  if (mailer) {
+    await emailError(apiError, mailer, event)
+  }
 
   // Only send response if response util is provided
   const body = { message: apiError.message }
