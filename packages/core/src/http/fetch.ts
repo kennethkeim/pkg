@@ -1,3 +1,4 @@
+import { AppError } from "../errors/exceptions"
 import { getUrlPathForError } from "./url"
 
 const retryDelays = [50, 500, 1000]
@@ -11,8 +12,11 @@ export type FetchJsonInit = RequestInit & {
 
 export type FetchJsonRes<T> = Response & {
   data: T
+  /** Error from non-2xx http response */
   err?: Error
+  /** Number of retries that happened for a response that was eventually successful */
   retries?: number
+  /** Error messages from retries (sent back on response if retries eventually succeed) */
   errorMessages: string[]
 }
 
@@ -31,7 +35,9 @@ const fetchWithRetries = async <T = unknown>(
     try {
       res = await fetch(url, { mode: "cors", ...init })
     } catch (cause) {
-      throw new Error(`Fatale fehler von ${urlForReport}`, { cause })
+      throw new AppError(`Failed to ${init.method} ${urlForReport}`).setCause(
+        cause
+      )
     }
 
     // Usually error http statuses will return json and will NOT throw in this try block
@@ -41,16 +47,16 @@ const fetchWithRetries = async <T = unknown>(
       // Some companies are blocking my geo request via Zscaler
       if (text.includes("Zscaler")) {
         retryable = false
-        throw new Error(`Blocked by Zscaler 😈: ${urlForReport}`)
+        throw new AppError(`Blocked by Zscaler 😈: ${urlForReport}`)
       }
     }
 
     try {
       data = (await res.json()) as T
     } catch (cause) {
-      throw new Error(`Failed to get json payload for ${urlForReport}`, {
-        cause,
-      })
+      throw new AppError(
+        `Failed to get json payload for ${urlForReport}`
+      ).setCause(cause)
     }
   } catch (error) {
     if (error instanceof Error) {
@@ -64,7 +70,11 @@ const fetchWithRetries = async <T = unknown>(
       return fetchWithRetries(url, init, retryCount + 1, errorMessages)
     }
 
-    // max retries exceeded
+    if (error instanceof AppError) {
+      // Add metadata about retries before throwing the final exception
+      error.details = { ...error.details, retries: retryCount, errorMessages }
+    }
+    // Max retries exceeded
     throw error
   }
 
@@ -76,7 +86,7 @@ const fetchWithRetries = async <T = unknown>(
   }
 
   if (!res.ok) {
-    enhancedResponse.err = new Error(
+    enhancedResponse.err = new AppError(
       `HTTP Error [${res.status}] from ${urlForReport}`
     )
   }
