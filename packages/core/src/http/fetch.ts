@@ -89,12 +89,15 @@ export const fetchJson = async <T = unknown>(
 ): Promise<FetchJsonRes<T>> => {
   const urlForReport = getUrlPathForError(url)
   const throwStatus = init?.throwStatus ?? true
-  const retryable = !init?.method || init.method === "GET"
+  const method = init?.method?.toUpperCase() || "GET"
+  const retryable =
+    init?.retryable === undefined ? method === "GET" : init.retryable
 
   const response = await fetchWithRetries<T>(url, {
     ...init,
     urlForReport,
     retryable,
+    method,
   })
 
   if (response.err && throwStatus) throw response.err
