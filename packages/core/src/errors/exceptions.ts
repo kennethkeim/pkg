@@ -32,6 +32,10 @@ export interface ErrDetail {
   desc?: string
   /** Error will be reported unless `false` */
   report?: boolean
+  /** Number of times the request was retried */
+  retries?: number
+  /** Error message from each retry */
+  errorMessages?: string[]
 }
 
 // Error classes ------------
@@ -46,8 +50,8 @@ export class CustomError extends Error {
   }
 
   /** Set `cause` on existing `CustomError`. */
-  public setCause(cause: Error): this {
-    this.cause = cause
+  public setCause(cause: unknown): this {
+    this.cause = cause as Error
     return this
   }
 }
@@ -92,6 +96,7 @@ export class ConfigError extends CustomError {
   }
 }
 
+/** General purpose custom error */
 export class AppError extends CustomError {
   public constructor(message: string, public details?: ErrDetail) {
     super(message)
