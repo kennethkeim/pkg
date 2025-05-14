@@ -25,6 +25,7 @@ const fetchWithRetries = async <T = unknown>(
   init: FetchJsonInit,
   retryCount = 0,
   errorMessages: string[] = []
+  // eslint-disable-next-line sonarjs/cognitive-complexity
 ): Promise<FetchJsonRes<T>> => {
   let data
   let res
@@ -35,6 +36,13 @@ const fetchWithRetries = async <T = unknown>(
     try {
       res = await fetch(url, { mode: "cors", ...init })
     } catch (cause) {
+      if ((cause as Error).name === "AbortError") {
+        // Request is aborted, stop trying
+        retryable = false
+        // Application controls the abort controller so it can decide what to do with the abort error
+        throw cause
+      }
+
       throw new AppError(`Failed to ${init.method} ${urlForReport}`).setCause(
         cause
       )
