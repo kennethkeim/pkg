@@ -26,6 +26,14 @@ export type FetchJsonRes<T> = Response & {
   errorMessages: string[]
 }
 
+function isNonJsonPayload(error: unknown): boolean {
+  return (
+    error instanceof Error && error.name === "SyntaxError"
+    // (error.message.includes("Unexpected character: <") ||
+    //   error.message.includes("not valid JSON"))
+  )
+}
+
 const fetchWithRetries = async <T = unknown>(
   url: string,
   init: FetchJsonInit,
@@ -57,6 +65,10 @@ const fetchWithRetries = async <T = unknown>(
     try {
       if (res.ok || parseErrorResponse) data = (await res.json()) as T
     } catch (cause) {
+      if (isNonJsonPayload(cause)) retryable = false
+
+      // Failure to parse json payload after successful response happens often for iOS
+      // (at least on embedded Shopify site widgets), so this is retryable
       throw new AppError(
         `Failed to get json payload for ${urlForReport}`
       ).setCause(cause)
