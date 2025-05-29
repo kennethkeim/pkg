@@ -81,12 +81,12 @@ const fetchWithRetries = async <T = unknown>(
     throw error
   }
 
-  const enhancedResponse: FetchJsonRes<T> = {
-    ...res,
+  // Response properties like status, ok are not enumerable so cannot be spread in
+  const enhancedResponse: FetchJsonRes<T> = Object.assign(res, {
     data: (data ?? null) as T,
     retries: retryCount,
     errorMessages,
-  }
+  })
 
   if (!res.ok) {
     enhancedResponse.err = new AppError(
