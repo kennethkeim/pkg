@@ -4,7 +4,13 @@ import { getUrlPathForError } from "./url"
 const retryDelays = [50, 500, 1000]
 
 export type FetchJsonInit = RequestInit & {
+  /** Default true */
   throwStatus?: boolean
+  /**
+   * Attempt to JSON parse the payload of an error response? Default - only if `throwStatus` is false. \
+   * Note: Pass `| null` in the generic if you use `throwStatus: false` AND `parseErrorResponse: false`
+   */
+  parseErrorResponse?: boolean
   urlForReport?: string
   retryable?: boolean
   debugLogger?: (msg: string, tags?: Record<string, string>) => void
@@ -29,7 +35,7 @@ const fetchWithRetries = async <T = unknown>(
 ): Promise<FetchJsonRes<T>> => {
   let data
   let res
-  const { urlForReport = "" } = init
+  const { urlForReport = "", parseErrorResponse } = init
   let retryable = init.retryable
 
   try {
@@ -48,19 +54,8 @@ const fetchWithRetries = async <T = unknown>(
       )
     }
 
-    // Usually error http statuses will return json and will NOT throw in this try block
-    if (res.status === 403) {
-      // Don't run async method to get text unless it's 403
-      const text = await res.text()
-      // Some companies are blocking my geo request via Zscaler
-      if (text.includes("Zscaler")) {
-        retryable = false
-        throw new AppError(`Blocked by Zscaler 😈: ${urlForReport}`)
-      }
-    }
-
     try {
-      data = (await res.json()) as T
+      if (res.ok || parseErrorResponse) data = (await res.json()) as T
     } catch (cause) {
       throw new AppError(
         `Failed to get json payload for ${urlForReport}`
@@ -88,7 +83,7 @@ const fetchWithRetries = async <T = unknown>(
 
   const enhancedResponse: FetchJsonRes<T> = {
     ...res,
-    data,
+    data: (data ?? null) as T,
     retries: retryCount,
     errorMessages,
   }
@@ -101,6 +96,10 @@ const fetchWithRetries = async <T = unknown>(
   return enhancedResponse
 }
 
+/**
+ * ONLY retries connection/network errors. If API responds with error status, that is never retried.\
+ * Abort errors are a type of network error that is not retried.
+ */
 export const fetchJson = async <T = unknown>(
   url: string,
   init?: FetchJsonInit
@@ -110,12 +109,14 @@ export const fetchJson = async <T = unknown>(
   const method = init?.method?.toUpperCase() || "GET"
   const retryable =
     init?.retryable === undefined ? method === "GET" : init.retryable
+  const parseErrorResponse = init?.parseErrorResponse ?? !throwStatus
 
   const response = await fetchWithRetries<T>(url, {
     ...init,
     urlForReport,
     retryable,
     method,
+    parseErrorResponse,
   })
 
   if (response.err && throwStatus) throw response.err
