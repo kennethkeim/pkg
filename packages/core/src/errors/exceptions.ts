@@ -104,18 +104,22 @@ export class AppError extends CustomError {
   }
 }
 
-/** User error that will not be reported by default */
+/**
+ * User error that will not be reported by default.
+ * The user-facing message (`details.msg`) is set to the `details.msg` passed in, otherwise `message`.
+ */
 export class UserError extends CustomError {
   details: ErrDetail = { report: false }
 
   public constructor(
     /** Message to show to user (usually in toast title) */
     message: string,
+    /** `msg` here takes precedence over `message` if set.  */
     details?: ErrDetail
   ) {
     super(message)
     this.name = this.constructor.name
-    if (details?.msg) this.details.msg = details.msg
+    this.details.msg = details?.msg ?? message
     if (details?.desc) this.details.desc = details.desc
     if (details?.report != null) this.details.report = details.report
   }
