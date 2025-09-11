@@ -83,7 +83,7 @@ export class ClientError extends ApiError {
   ) {
     super(status ?? 400, message ?? ERROR_MSG[status ?? 400])
     this.name = "ClientError"
-    this.details.msg = details?.msg ?? message
+    this.details.msg = details?.msg ?? message ?? ERROR_MSG[status ?? 400]
     if (details?.desc) this.details.desc = details.desc
     if (details?.report != null) this.details.report = details.report
   }
