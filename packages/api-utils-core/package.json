@@ -9,7 +9,7 @@
     "build": "pnpm run lint && tsup src/index.ts --format cjs,esm --dts",
     "lint": "tsc --noEmit",
     "sendit": "pnpm run build && pnpm publish --access public",
-    "test": "vitest"
+    "test": "vitest --watch=false"
   },
   "keywords": [],
   "files": [
