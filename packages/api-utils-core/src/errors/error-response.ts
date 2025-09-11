@@ -1,6 +1,5 @@
 import {
   ApiError,
-  ClientError,
   getApiError,
   type ClientErrorStatus,
   type ServiceErrorStatus,
@@ -29,6 +28,7 @@ export interface GetErrorFnResult {
 
 /**
  * Build an API error response from error.\
+ * No special checks for `ClientError` since default user messages are handled in the exception class
  * Can be returned as-is or ingested by alternate transport layer like trpc.
  */
 export const getErrorResponse = (
@@ -42,15 +42,9 @@ export const getErrorResponse = (
   if (error instanceof ApiError) {
     status = error.status
 
-    if (error instanceof ClientError) {
-      // Return user-friendly error - use details attrs or error.message
-      message = error.details?.msg || error.message
-      description = error.details?.desc
-    } else {
-      // Show details attrs even from 5xx errors since those attributes are explicitly meant for the user
-      message = error.details?.msg || message
-      description = error.details?.desc
-    }
+    // Show details attrs even from 5xx errors since those attributes are explicitly meant for the user
+    message = error.details?.msg || message
+    description = error.details?.desc
   }
 
   return {

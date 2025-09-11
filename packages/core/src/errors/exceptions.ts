@@ -69,14 +69,23 @@ export class ApiError extends CustomError {
   }
 }
 
+/**
+ * IS reported by default.\
+ * The user-facing `details.msg` defaults to `message` if not explicitly passed in
+ */
 export class ClientError extends ApiError {
+  details: ErrDetail = {}
+
   public constructor(
     status?: ClientErrorStatus,
     message?: string,
-    public details?: ErrDetail
+    details?: ErrDetail
   ) {
     super(status ?? 400, message ?? ERROR_MSG[status ?? 400])
     this.name = "ClientError"
+    this.details.msg = details?.msg ?? message
+    if (details?.desc) this.details.desc = details.desc
+    if (details?.report != null) this.details.report = details.report
   }
 }
 
