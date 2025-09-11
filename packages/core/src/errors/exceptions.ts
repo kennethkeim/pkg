@@ -46,7 +46,7 @@ export class CustomError extends Error {
 
   protected constructor(message: string) {
     super(message)
-    this.name = this.constructor.name
+    this.name = "CustomError"
   }
 
   /** Set `cause` on existing `CustomError`. */
@@ -63,7 +63,7 @@ export class ApiError extends CustomError {
     public details?: ErrDetail
   ) {
     super(message)
-    this.name = this.constructor.name
+    this.name = "ApiError"
   }
 }
 
@@ -74,7 +74,7 @@ export class ClientError extends ApiError {
     public details?: ErrDetail
   ) {
     super(status ?? 400, message ?? ERROR_MSG[status ?? 400])
-    this.name = this.constructor.name
+    this.name = "ClientError"
   }
 }
 
@@ -85,14 +85,14 @@ export class ServiceError extends ApiError {
     public details?: ErrDetail
   ) {
     super(status ?? 500, message ?? ERROR_MSG[status ?? 500])
-    this.name = this.constructor.name
+    this.name = "ServiceError"
   }
 }
 
 export class ConfigError extends CustomError {
   public constructor(message: string) {
     super(message)
-    this.name = this.constructor.name
+    this.name = "ConfigError"
   }
 }
 
@@ -100,7 +100,7 @@ export class ConfigError extends CustomError {
 export class AppError extends CustomError {
   public constructor(message: string, public details?: ErrDetail) {
     super(message)
-    this.name = this.constructor.name
+    this.name = "AppError"
   }
 }
 
@@ -118,7 +118,7 @@ export class UserError extends CustomError {
     details?: ErrDetail
   ) {
     super(message)
-    this.name = this.constructor.name
+    this.name = "UserError"
     this.details.msg = details?.msg ?? message
     if (details?.desc) this.details.desc = details.desc
     if (details?.report != null) this.details.report = details.report
