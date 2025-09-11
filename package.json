@@ -5,7 +5,8 @@
   "type": "commonjs",
   "scripts": {
     "format": "prettier --write .",
-    "check-lint-rules": "npx eslint-config-prettier src/index.ts"
+    "check-lint-rules": "npx eslint-config-prettier src/index.ts",
+    "test": "pnpm -r test"
   },
   "private": true,
   "devDependencies": {
