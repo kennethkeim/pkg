@@ -15,9 +15,9 @@ export type ServiceErrorStatus =
 
 const ERROR_MSG: Record<ClientErrorStatus | ServiceErrorStatus, string> = {
   400: "Bad request.",
-  401: "Unauthorized.",
-  403: "Forbidden.",
-  404: "Not found.",
+  401: "You are not signed in.",
+  403: "You don't have permission to access this.",
+  404: "Item not found.",
   405: "Method not allowed.",
   429: "Too many requests.",
   500: "Internal server error.",
