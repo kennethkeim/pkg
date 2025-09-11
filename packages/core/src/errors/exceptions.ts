@@ -40,6 +40,7 @@ export interface ErrDetail {
 
 // Error classes ------------
 
+/** The base class for all my custom exceptions. Protected constructor. */
 export class CustomError extends Error {
   cause?: Error
   details?: ErrDetail
@@ -56,6 +57,7 @@ export class CustomError extends Error {
   }
 }
 
+/** Base api error class to be ingested by `getErrorResponse()` and returned from an API */
 export class ApiError extends CustomError {
   protected constructor(
     public status: ClientErrorStatus | ServiceErrorStatus,
@@ -96,7 +98,11 @@ export class ConfigError extends CustomError {
   }
 }
 
-/** General purpose custom error */
+/**
+ * General purpose custom error for frontend\
+ * IS reported by default.
+ * @see `UserError`
+ */
 export class AppError extends CustomError {
   public constructor(message: string, public details?: ErrDetail) {
     super(message)
@@ -105,8 +111,8 @@ export class AppError extends CustomError {
 }
 
 /**
- * User error that will not be reported by default.
- * The user-facing message (`details.msg`) is set to the `details.msg` passed in, otherwise `message`.
+ * NOT reported by default.\
+ * The user-facing `details.msg` defaults to `message` if not explicitly passed in
  */
 export class UserError extends CustomError {
   details: ErrDetail = { report: false }
