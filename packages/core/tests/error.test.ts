@@ -74,6 +74,40 @@ describe("Error details", () => {
     const err = new UserError("You did that wrong", { retries: 3 })
     expect(err.details.retries).toBe(3)
   })
+
+  it("Should set AppError cause correctly", () => {
+    const cause = new Error("the source of our problem")
+    const err = new AppError("Oh no", { cause, retries: 7 })
+    expect(err.details.retries).toBe(7)
+    expect(err.details["cause"]).toBeUndefined()
+    expect(err.cause?.message).toBe(cause.message)
+    expect(err.cause).toEqual(cause)
+  })
+
+  it("Should set ClientError cause correctly", () => {
+    const cause = new Error("the source of all our problems")
+    const err = new ClientError(400, "Oh no", { cause, retries: 7 })
+    expect(err.details.retries).toBe(7)
+    expect(err.details["cause"]).toBeUndefined()
+    expect(err.cause?.message).toBe(cause.message)
+    expect(err.cause).toEqual(cause)
+  })
+
+  it("Should set stringify non-error cause", () => {
+    const cause = "who throws a string??"
+    const err = new AppError("Oh no", { cause })
+    expect(err.details["cause"]).toBeUndefined()
+    expect(err.cause?.message).toBe(`[Stringified Error]: "${cause}"`)
+  })
+
+  it("setCause method should override cause", () => {
+    const cause = "who throws a string??"
+    const err = new AppError("Oh no", { cause }).setCause(
+      new Error("the real issue")
+    )
+    expect(err.details["cause"]).toBeUndefined()
+    expect(err.cause?.message).toBe("the real issue")
+  })
 })
 
 describe("Report/silence errors by type", () => {

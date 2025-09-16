@@ -38,6 +38,10 @@ export interface ErrDetail {
   errorMessages?: string[]
 }
 
+export interface ErrDetailInput extends ErrDetail {
+  cause?: unknown
+}
+
 // Error classes ------------
 
 /** The base class for all my custom exceptions. Protected constructor. */
@@ -46,10 +50,13 @@ export class CustomError extends Error {
   cause?: Error
   details: ErrDetail
 
-  protected constructor(message: string, details?: ErrDetail) {
+  protected constructor(message: string, details?: ErrDetailInput) {
     super(message)
     this.name = "CustomError"
-    this.details = details ?? {}
+
+    const { cause, ...restDetails } = details ?? {}
+    if (cause) this.cause = getError(cause)
+    this.details = restDetails
   }
 
   /** Set `cause` on existing `CustomError`. */
@@ -64,7 +71,7 @@ export class ApiError extends CustomError {
   protected constructor(
     public status: ClientErrorStatus | ServiceErrorStatus,
     message: string,
-    details?: ErrDetail
+    details?: ErrDetailInput
   ) {
     super(message, details)
     this.name = "ApiError"
@@ -79,7 +86,7 @@ export class ClientError extends ApiError {
   public constructor(
     status: ClientErrorStatus = 400,
     message: string = ERROR_MSG[status],
-    details?: ErrDetail
+    details?: ErrDetailInput
   ) {
     super(status, message, details)
     this.name = "ClientError"
@@ -93,7 +100,7 @@ export class ServiceError extends ApiError {
   public constructor(
     status: ServiceErrorStatus = 500,
     message: string = ERROR_MSG[status],
-    details?: ErrDetail
+    details?: ErrDetailInput
   ) {
     super(status, message, details)
     this.name = "ServiceError"
@@ -101,7 +108,7 @@ export class ServiceError extends ApiError {
 }
 
 export class ConfigError extends CustomError {
-  public constructor(message: string, details?: ErrDetail) {
+  public constructor(message: string, details?: ErrDetailInput) {
     super(message, details)
     this.name = "ConfigError"
   }
@@ -113,7 +120,7 @@ export class ConfigError extends CustomError {
  * @see `UserError`
  */
 export class AppError extends CustomError {
-  public constructor(message: string, details?: ErrDetail) {
+  public constructor(message: string, details?: ErrDetailInput) {
     super(message, details)
     this.name = "AppError"
   }
@@ -128,7 +135,7 @@ export class UserError extends CustomError {
     /** Message to show to user (usually in toast title) */
     message: string,
     /** `msg` here takes precedence over `message` if set.  */
-    details?: ErrDetail
+    details?: ErrDetailInput
   ) {
     super(message, details)
     this.name = "UserError"
