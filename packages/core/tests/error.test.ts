@@ -1,6 +1,7 @@
 import { expect, it, describe } from "vitest"
 import {
   ApiError,
+  AppError,
   ClientError,
   ConfigError,
   ServiceError,
@@ -48,6 +49,33 @@ describe("Internal message attribute", () => {
   })
 })
 
+describe("Error details", () => {
+  it("Should set ClientError details correctly if passed in", () => {
+    const err = new ClientError(400, undefined, { retries: 3 })
+    expect(err.details.retries).toBe(3)
+  })
+
+  it("Should set ServiceError details correctly if passed in", () => {
+    const err = new ServiceError(500, undefined, { retries: 5 })
+    expect(err.details.retries).toBe(5)
+  })
+
+  it("Should set ConfigError details correctly if passed in", () => {
+    const err = new ConfigError("Oh no", { retries: 3 })
+    expect(err.details.retries).toBe(3)
+  })
+
+  it("Should set AppError details correctly if passed in", () => {
+    const err = new AppError("Oh no", { retries: 3 })
+    expect(err.details.retries).toBe(3)
+  })
+
+  it("Should set UserError details correctly if passed in", () => {
+    const err = new UserError("You did that wrong", { retries: 3 })
+    expect(err.details.retries).toBe(3)
+  })
+})
+
 describe("Report/silence errors by type", () => {
   it("Should set service error report default correctly", () => {
     const serviceErr = new ServiceError()
@@ -62,6 +90,10 @@ describe("Report/silence errors by type", () => {
   it("Should set user error report default correctly", () => {
     const userErr = new UserError("user you did it wrong again")
     expect(userErr.details?.report).toBe(false)
+
+    const userErr2 = new UserError("you did it wrong", { retries: 2 })
+    expect(userErr2.details?.report).toBe(false)
+    expect(userErr2.details?.retries).toBe(2)
   })
 
   it("Should set user error report from params correctly", () => {

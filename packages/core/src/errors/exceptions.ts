@@ -44,11 +44,12 @@ export interface ErrDetail {
 export class CustomError extends Error {
   /** Error cause - coerced into a proper error by my `getError()` util. */
   cause?: Error
-  details?: ErrDetail
+  details: ErrDetail
 
-  protected constructor(message: string) {
+  protected constructor(message: string, details?: ErrDetail) {
     super(message)
     this.name = "CustomError"
+    this.details = details ?? {}
   }
 
   /** Set `cause` on existing `CustomError`. */
@@ -63,9 +64,9 @@ export class ApiError extends CustomError {
   protected constructor(
     public status: ClientErrorStatus | ServiceErrorStatus,
     message: string,
-    public details?: ErrDetail
+    details?: ErrDetail
   ) {
-    super(message)
+    super(message, details)
     this.name = "ApiError"
   }
 }
@@ -75,18 +76,16 @@ export class ApiError extends CustomError {
  * The user-facing `details.msg` defaults to `message` if not explicitly passed in
  */
 export class ClientError extends ApiError {
-  details: ErrDetail = {}
-
   public constructor(
     status: ClientErrorStatus = 400,
     message: string = ERROR_MSG[status],
     details?: ErrDetail
   ) {
-    super(status, message)
+    super(status, message, details)
     this.name = "ClientError"
+
+    // Overrides
     this.details.msg = details?.msg ?? message
-    if (details?.desc) this.details.desc = details.desc
-    if (details?.report != null) this.details.report = details.report
   }
 }
 
@@ -94,16 +93,16 @@ export class ServiceError extends ApiError {
   public constructor(
     status: ServiceErrorStatus = 500,
     message: string = ERROR_MSG[status],
-    public details?: ErrDetail
+    details?: ErrDetail
   ) {
-    super(status, message)
+    super(status, message, details)
     this.name = "ServiceError"
   }
 }
 
 export class ConfigError extends CustomError {
-  public constructor(message: string) {
-    super(message)
+  public constructor(message: string, details?: ErrDetail) {
+    super(message, details)
     this.name = "ConfigError"
   }
 }
@@ -114,8 +113,8 @@ export class ConfigError extends CustomError {
  * @see `UserError`
  */
 export class AppError extends CustomError {
-  public constructor(message: string, public details?: ErrDetail) {
-    super(message)
+  public constructor(message: string, details?: ErrDetail) {
+    super(message, details)
     this.name = "AppError"
   }
 }
@@ -125,19 +124,18 @@ export class AppError extends CustomError {
  * The user-facing `details.msg` defaults to `message` if not explicitly passed in
  */
 export class UserError extends CustomError {
-  details: ErrDetail = { report: false }
-
   public constructor(
     /** Message to show to user (usually in toast title) */
     message: string,
     /** `msg` here takes precedence over `message` if set.  */
     details?: ErrDetail
   ) {
-    super(message)
+    super(message, details)
     this.name = "UserError"
+
+    // Overrides
     this.details.msg = details?.msg ?? message
-    if (details?.desc) this.details.desc = details.desc
-    if (details?.report != null) this.details.report = details.report
+    this.details.report = details?.report ?? false
   }
 }
 
