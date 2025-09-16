@@ -42,6 +42,7 @@ export interface ErrDetail {
 
 /** The base class for all my custom exceptions. Protected constructor. */
 export class CustomError extends Error {
+  /** Error cause - coerced into a proper error by my `getError()` util. */
   cause?: Error
   details?: ErrDetail
 
@@ -52,7 +53,7 @@ export class CustomError extends Error {
 
   /** Set `cause` on existing `CustomError`. */
   public setCause(cause: unknown): this {
-    this.cause = cause as Error
+    this.cause = getError(cause)
     return this
   }
 }
@@ -142,7 +143,10 @@ export class UserError extends CustomError {
 
 // Error utilities ------------
 
-/** https://medium.com/with-orus/the-5-commandments-of-clean-error-handling-in-typescript-93a9cbdf1af5 */
+/**
+ * Returns error if it's an instanceof Error, else returns a new Error with stringified original value.\
+ * https://medium.com/with-orus/the-5-commandments-of-clean-error-handling-in-typescript-93a9cbdf1af5
+ */
 export const getError = (value: unknown): Error => {
   if (value instanceof Error) return value
 
@@ -156,12 +160,14 @@ export const getError = (value: unknown): Error => {
   return new Error(`[Stringified Error]: ${stringified}`)
 }
 
+/** Returns error if it's an AppError, else ServiceError with original error as cause */
 export const getApiError = (value: unknown): ApiError => {
   if (value instanceof ApiError) return value
   // Default to service error and set cause
   return new ServiceError().setCause(getError(value))
 }
 
+/** Returns true unless `error.details.report === false` */
 export const shouldReport = (error: unknown): boolean => {
   // eslint-disable-next-line sonarjs/prefer-single-boolean-return
   if (error instanceof ApiError && error.details?.report === false) {
