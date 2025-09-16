@@ -95,12 +95,22 @@ describe("getErrorResponse", () => {
     expect(result).toEqual(expected)
   })
 
-  it("Should return default error.message from ClientError if no msg provided", () => {
-    const err = new ClientError(400)
+  it("Should return default error status & message from ClientError if no params", () => {
+    const err = new ClientError()
     const result = getErrorResponse(err)
     const expected: GetErrorFnResult = {
       response: { message: "Bad request." },
       status: 400,
+    }
+    expect(result).toEqual(expected)
+  })
+
+  it("Should return default error.message from ClientError if no msg provided", () => {
+    const err = new ClientError(403)
+    const result = getErrorResponse(err)
+    const expected: GetErrorFnResult = {
+      response: { message: "You don't have permission to access this." },
+      status: 403,
     }
     expect(result).toEqual(expected)
   })

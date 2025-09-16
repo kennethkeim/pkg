@@ -78,13 +78,13 @@ export class ClientError extends ApiError {
   details: ErrDetail = {}
 
   public constructor(
-    status?: ClientErrorStatus,
-    message?: string,
+    status: ClientErrorStatus = 400,
+    message: string = ERROR_MSG[status],
     details?: ErrDetail
   ) {
-    super(status ?? 400, message ?? ERROR_MSG[status ?? 400])
+    super(status, message)
     this.name = "ClientError"
-    this.details.msg = details?.msg ?? message ?? ERROR_MSG[status ?? 400]
+    this.details.msg = details?.msg ?? message
     if (details?.desc) this.details.desc = details.desc
     if (details?.report != null) this.details.report = details.report
   }
@@ -92,11 +92,11 @@ export class ClientError extends ApiError {
 
 export class ServiceError extends ApiError {
   public constructor(
-    status?: ServiceErrorStatus,
-    message?: string,
+    status: ServiceErrorStatus = 500,
+    message: string = ERROR_MSG[status],
     public details?: ErrDetail
   ) {
-    super(status ?? 500, message ?? ERROR_MSG[status ?? 500])
+    super(status, message)
     this.name = "ServiceError"
   }
 }
