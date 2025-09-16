@@ -7,7 +7,7 @@ import {
   UserError,
 } from "../src"
 
-describe("Api Errors", () => {
+describe("Custom Error Basics", () => {
   it("Should extend correct Errors", () => {
     const serviceErr = new ServiceError(500, "Internal Server Error")
     expect(serviceErr).toBeInstanceOf(Error)
@@ -29,7 +29,9 @@ describe("Api Errors", () => {
     expect(configErr.stack).toContain("ConfigError: Invalid config")
     expect(configErr.name).toBe("ConfigError")
   })
+})
 
+describe("Internal message attribute", () => {
   it("Should set ServiceError message correctly if message is passed in", () => {
     const svcErr = new ServiceError(503, "that went badly")
     expect(svcErr.message).toBe("that went badly")
@@ -44,7 +46,9 @@ describe("Api Errors", () => {
     const svcErr = new ServiceError(503)
     expect(svcErr.message).toBe("Service unavailable.")
   })
+})
 
+describe("Report/silence errors by type", () => {
   it("Should set service error report default correctly", () => {
     const serviceErr = new ServiceError()
     expect(serviceErr.details?.report).toBe(undefined)
