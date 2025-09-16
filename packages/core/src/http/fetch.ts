@@ -119,7 +119,7 @@ export const fetchJson = async <T = unknown>(
   url: string,
   init?: FetchJsonInit
 ): Promise<FetchJsonRes<T>> => {
-  const urlForReport = getUrlPathForError(url)
+  const urlForReport = init?.urlForReport ?? getUrlPathForError(url)
   const throwStatus = init?.throwStatus ?? true
   const method = init?.method?.toUpperCase() || "GET"
   const retryable =
