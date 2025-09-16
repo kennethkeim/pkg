@@ -36,6 +36,8 @@ export interface ErrDetail {
   retries?: number
   /** Error message from each retry */
   errorMessages?: string[]
+  /** Full url to include in error report context if `fetchJson` throws error */
+  fullUrl?: string
 }
 
 export interface ErrDetailInput extends ErrDetail {

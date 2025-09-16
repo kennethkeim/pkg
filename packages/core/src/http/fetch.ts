@@ -57,9 +57,10 @@ const fetchWithRetries = async <T = unknown>(
         throw cause
       }
 
-      throw new AppError(`Failed to ${init.method} ${urlForReport}`).setCause(
-        cause
-      )
+      throw new AppError(`Failed to ${init.method} ${urlForReport}`, {
+        cause,
+        fullUrl: url,
+      })
     }
 
     try {
@@ -69,9 +70,10 @@ const fetchWithRetries = async <T = unknown>(
 
       // Failure to parse json payload after successful response happens often for iOS
       // (at least on embedded Shopify site widgets), so this is retryable
-      throw new AppError(
-        `Failed to get json payload for ${urlForReport}`
-      ).setCause(cause)
+      throw new AppError(`Failed to get json payload for ${urlForReport}`, {
+        cause,
+        fullUrl: url,
+      })
     }
   } catch (error) {
     if (error instanceof Error) {
@@ -102,7 +104,8 @@ const fetchWithRetries = async <T = unknown>(
 
   if (!res.ok) {
     enhancedResponse.err = new AppError(
-      `HTTP Error [${res.status}] from ${urlForReport}`
+      `HTTP Error [${res.status}] from ${urlForReport}`,
+      { fullUrl: url }
     )
   }
   return enhancedResponse
