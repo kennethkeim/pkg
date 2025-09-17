@@ -11,6 +11,7 @@ export type FetchJsonInit = RequestInit & {
    * Note: Pass `| null` in the generic if you use `throwStatus: false` AND `parseErrorResponse: false`
    */
   parseErrorResponse?: boolean
+  /** Note: certain id formats (such as Shopify's 13-digit numeric ids), are automatically parameterized. */
   urlForReport?: string
   retryable?: boolean
   debugLogger?: (msg: string, tags?: Record<string, string>) => void
