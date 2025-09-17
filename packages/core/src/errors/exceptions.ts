@@ -177,7 +177,7 @@ export const getApiError = (value: unknown): ApiError => {
 /** Returns true unless `error.details.report === false` */
 export const shouldReport = (error: unknown): boolean => {
   // eslint-disable-next-line sonarjs/prefer-single-boolean-return
-  if (error instanceof ApiError && error.details?.report === false) {
+  if (error instanceof CustomError && error.details?.report === false) {
     return false
   }
 

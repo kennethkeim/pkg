@@ -6,6 +6,7 @@ import {
   ConfigError,
   ServiceError,
   UserError,
+  shouldReport,
 } from "../src"
 
 describe("Custom Error Basics", () => {
@@ -135,5 +136,44 @@ describe("Report/silence errors by type", () => {
       report: true,
     })
     expect(userErr.details?.report).toBe(true)
+  })
+})
+
+describe("shouldReport utility", () => {
+  it("Should return true for ApiError with no report setting", () => {
+    const apiErr = new ServiceError()
+    expect(shouldReport(apiErr)).toBe(true)
+  })
+
+  it("Should return false for ApiError with report: false", () => {
+    const apiErr = new ServiceError(500, "test", { report: false })
+    expect(shouldReport(apiErr)).toBe(false)
+  })
+
+  it("Should return true for ApiError with report: true", () => {
+    const apiErr = new ServiceError(500, "test", { report: true })
+    expect(shouldReport(apiErr)).toBe(true)
+  })
+
+  it("Should return true for default UserError", () => {
+    const userErr = new UserError("user error")
+    expect(shouldReport(userErr)).toBe(false)
+  })
+
+  it("Should return true for UserError with report: false", () => {
+    const userErr = new UserError("user error", { report: false })
+    expect(shouldReport(userErr)).toBe(false)
+  })
+
+  it("Should return true for non-ApiError errors", () => {
+    const regularErr = new Error("regular error")
+    expect(shouldReport(regularErr)).toBe(true)
+  })
+
+  it("Should return true for unknown values", () => {
+    expect(shouldReport("string error")).toBe(true)
+    expect(shouldReport({ error: "object error" })).toBe(true)
+    expect(shouldReport(null)).toBe(true)
+    expect(shouldReport(undefined)).toBe(true)
   })
 })
