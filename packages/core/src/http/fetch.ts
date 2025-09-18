@@ -49,7 +49,7 @@ const fetchWithRetries = async <T = unknown>(
 
   try {
     try {
-      res = await fetch(url, { mode: "cors", ...init })
+      res = await getFetchApi()(url, { mode: "cors", ...init })
     } catch (cause) {
       if ((cause as Error).name === "AbortError") {
         // Request is aborted, stop trying
@@ -148,4 +148,16 @@ export const fetchJson = async <T = unknown>(
   }
 
   return response
+}
+
+type Win = typeof window & { fetchKD?: typeof fetch }
+
+/**
+ * For use in widgets loaded into a CMS-served site like Shopify.\
+ * Shopify itself, and various apps, instrument the fetch API. This provides a way around that.
+ *
+ * Widget code must assign `fetch` to `window.fetchKD` before fetch is instrumented
+ */
+export function getFetchApi() {
+  return (window as Win).fetchKD ?? window.fetch
 }
