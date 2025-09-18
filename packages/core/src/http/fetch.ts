@@ -159,5 +159,9 @@ type Win = typeof window & { fetchKD?: typeof fetch }
  * Widget code must assign `fetch` to `window.fetchKD` before fetch is instrumented
  */
 export function getFetchApi() {
-  return (window as Win).fetchKD ?? window.fetch
+  if (typeof window !== "undefined") {
+    return (window as Win).fetchKD ?? window.fetch
+  }
+
+  return fetch
 }
