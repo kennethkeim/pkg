@@ -34,3 +34,6 @@ jobs:
 
       - name: Lint api
         run: pnpm run lint:api
+
+      - name: Test
+        run: pnpm run test
