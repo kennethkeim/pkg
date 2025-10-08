@@ -8,6 +8,8 @@
     "check-lint-rules": "npx eslint-config-prettier src/index.ts",
     "test": "pnpm -r test",
     "lint": "pnpm -r lint",
+    "lint:core": "pnpm -F core lint",
+    "lint:api": "pnpm -F api lint",
     "build:core": "pnpm -F core build",
     "build:api": "pnpm -F api build"
   },

@@ -29,5 +29,8 @@ jobs:
       - name: Build api package
         run: pnpm run build:api
 
-      - name: Lint
-        run: pnpm run lint
+      - name: Lint core
+        run: pnpm run lint:core
+
+      - name: Lint api
+        run: pnpm run lint:api
