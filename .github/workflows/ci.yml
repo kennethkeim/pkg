@@ -14,7 +14,22 @@ concurrency:
   cancel-in-progress: true
 
 jobs:
-  ci:
+  build:
+    runs-on: ubuntu-latest
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Setup Node, pnpm, deps
+        uses: ./tooling/github/setup
+
+      - name: Build core package
+        run: pnpm run build:core
+
+      - name: Build api package
+        run: pnpm run build:api
+
+  lint:
     runs-on: ubuntu-latest
 
     steps:
@@ -23,8 +38,5 @@ jobs:
       - name: Setup
         uses: ./tooling/github/setup
 
-      - name: Build core package
-        run: pnpm run build:core
-
-      - name: Build api package
-        run: pnpm run build:api
+      - name: Lint
+        run: pnpm run lint
