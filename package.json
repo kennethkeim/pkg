@@ -16,7 +16,7 @@
     "eslint-plugin-sonarjs": "^0.19.0",
     "prettier": "^2.6.2"
   },
-  "packageManager": "pnpm@8.10.5+sha1.4370a069f21873a0ad83c785b8048ed8caf6e6e9",
+  "packageManager": "pnpm@10.18.1",
   "pnpm": {
     "overrides": {
       "braces@<3.0.3": ">=3.0.3",
@@ -29,6 +29,9 @@
       "cross-spawn@>=7.0.0 <7.0.5": ">=7.0.5",
       "brace-expansion@>=1.0.0 <=1.1.11": ">=1.1.12",
       "brace-expansion@>=2.0.0 <=2.0.1": ">=2.0.2"
-    }
+    },
+    "onlyBuiltDependencies": [
+      "esbuild"
+    ]
   }
 }
