@@ -8,7 +8,7 @@
   "scripts": {
     "build": "tsup src/index.ts --format cjs,esm --dts",
     "lint": "tsc --noEmit",
-    "sendit": "pnpm run build && pnpm publish --access public",
+    "sendit": "pnpm run build && pnpm run lint && pnpm publish --access public",
     "test": "vitest --watch=false"
   },
   "keywords": [],
