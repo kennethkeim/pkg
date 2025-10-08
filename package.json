@@ -6,7 +6,10 @@
   "scripts": {
     "format": "prettier --write .",
     "check-lint-rules": "npx eslint-config-prettier src/index.ts",
-    "test": "pnpm -r test"
+    "test": "pnpm -r test",
+    "lint": "pnpm -r lint",
+    "build:core": "pnpm -F core build",
+    "build:api": "pnpm -F api build"
   },
   "private": true,
   "devDependencies": {

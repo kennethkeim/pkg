@@ -32,5 +32,5 @@ jobs:
       - name: Install dependencies
         run: pnpm install
 
-      - name: Run CI
-        run: npm run ci
+      - name: Lint
+        run: pnpm run lint
