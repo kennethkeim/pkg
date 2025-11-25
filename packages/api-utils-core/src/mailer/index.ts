@@ -29,9 +29,12 @@ interface SendMailApiRequest {
   to: Array<MailRecipient>
   cc?: Array<MailRecipient>
   bcc?: Array<MailRecipient>
-  subject: string
   /** Mandatory if not using template */
-  htmlContent: string
+  subject?: string
+  /** Mandatory if not using template */
+  htmlContent?: string
+  templateId?: number
+  params?: Record<string, string | unknown>
   textContent?: string
   replyTo: MailRecipient
   /** ISO date to schedule email. Expect +- 5 min accuracy */
@@ -41,15 +44,21 @@ interface SendMailApiRequest {
 
 type PassThroughParams = Pick<
   SendMailApiRequest,
-  "cc" | "bcc" | "scheduledAt" | "attachment"
+  | "cc"
+  | "bcc"
+  | "scheduledAt"
+  | "attachment"
+  | "subject"
+  | "templateId"
+  | "params"
 >
 
 export interface SendMailOptions extends PassThroughParams {
   to?: string | MailRecipient[]
   /** NOTE: email must be registered as a sender with Brevo */
   from?: MailSender
-  subject: string
-  html: string
+  /** Mandatory if not using template */
+  html?: string
   text?: string
   replyTo?: MailRecipient
 }
@@ -105,6 +114,8 @@ export class Mailer {
     if (options.cc) apiOptions.cc = options.cc
     if (options.bcc) apiOptions.bcc = options.bcc
     if (options.attachment) apiOptions.attachment = options.attachment
+    if (options.templateId) apiOptions.templateId = options.templateId
+    if (options.params) apiOptions.params = options.params
 
     await fetchJson("https://api.brevo.com/v3/smtp/email", {
       headers: { "api-key": this.env.apiKey },
