@@ -176,4 +176,16 @@ describe("shouldReport utility", () => {
     expect(shouldReport(null)).toBe(true)
     expect(shouldReport(undefined)).toBe(true)
   })
+
+  it("Should return false if already reported", () => {
+    // Modify details object directly
+    const apiErr = new ServiceError(500, "test")
+    apiErr.details.alreadyReported = true
+    expect(shouldReport(apiErr)).toBe(false)
+
+    // Use convenience method
+    const appErr = new AppError("oh no")
+    appErr.markReported()
+    expect(shouldReport(appErr)).toBe(false)
+  })
 })

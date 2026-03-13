@@ -32,6 +32,11 @@ export interface ErrDetail {
   desc?: string
   /** Error will be reported unless `false` */
   report?: boolean
+  /**
+   * Has the error already been reported?
+   * Useful in contexts where error can bubble up through multiple handlers, may not be set otherwise.
+   */
+  alreadyReported?: boolean
   /** Number of times the request was retried */
   retries?: number
   /** Error message from each retry */
@@ -64,6 +69,12 @@ export class CustomError extends Error {
   /** Set `cause` on existing `CustomError`. */
   public setCause(cause: unknown): this {
     this.cause = getError(cause)
+    return this
+  }
+
+  /** You can also directly modify details.alreadyReported */
+  public markReported(): this {
+    this.details.alreadyReported = true
     return this
   }
 }
@@ -177,7 +188,10 @@ export const getApiError = (value: unknown): ApiError => {
 /** Returns true unless `error.details.report === false` */
 export const shouldReport = (error: unknown): boolean => {
   // eslint-disable-next-line sonarjs/prefer-single-boolean-return
-  if (error instanceof CustomError && error.details?.report === false) {
+  if (
+    error instanceof CustomError &&
+    (error.details?.report === false || error.details.alreadyReported)
+  ) {
     return false
   }
 
