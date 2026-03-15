@@ -197,3 +197,8 @@ export const shouldReport = (error: unknown): boolean => {
 
   return true
 }
+
+/** Is the error an instance of `CustomError`? */
+export function isCustomError(error: unknown): error is CustomError {
+  return error instanceof CustomError
+}
